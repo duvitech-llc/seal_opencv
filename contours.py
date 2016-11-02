@@ -20,10 +20,6 @@ while(True):
     cv2.putText(overlay, "FPS: {}".format(int(fps)),
         (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 255), 3)
 
-    cv2.addWeighted(overlay, 0.80, output, 1 - 0.80,
-            0, output)
-
-
     # open windows with original image, mask, res, and image with keypoints marked
     cv2.imshow('frame',frame)
     cv2.imshow('grayscale',gray)
