@@ -13,6 +13,10 @@ while not cap.isOpened():
 
 total_frames = cap.get(cv2.CAP_PROP_FRAME_COUNT) - 5
 
+# Set threshold and maxValue default 127
+limit = 150
+maxValue = 255
+ 
 # Set up the SimpleBlobdetector with default parameters.
 params = cv2.SimpleBlobDetector_Params()
     
@@ -48,7 +52,7 @@ while(True):
         keypoints = detector.detect(frame)
         im_with_keypoints = cv2.drawKeypoints(frame, keypoints, np.array([]), (0,0,255), cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
         imgray = cv2.cvtColor(frame,cv2.COLOR_BGR2GRAY)
-        ret,thresh = cv2.threshold(imgray,127,255,0)
+        ret,thresh = cv2.threshold(imgray,limit,maxValue,cv2.THRESH_TOZERO)
         im2, contours, hierarchy = cv2.findContours(thresh,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
         idx =0 
         for cnt in contours:
