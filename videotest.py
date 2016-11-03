@@ -63,7 +63,7 @@ while(True):
 
         ret,thresh = cv2.threshold(imgray,limit,maxValue,cv2.THRESH_BINARY)
         im2, contours, hierarchy = cv2.findContours(thresh,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
-        print "Contours: {}".format(contours.__len__())
+        # print "Contours: {}".format(contours.__len__())
 
         if(contours.__len__()>1):
             text = "Warning"
@@ -76,7 +76,7 @@ while(True):
             cv2.fillConvexPoly(firstFrame,pool_zone,(255,0,0), lineType=8, shift=0)
             continue
         else:
-            cv2.drawContours(frame, contours, -1, (0,255,0), 3)
+            cv2.drawContours(imgray, contours, -1, (0,255,0), 3)
 
         # draw the text and timestamp on the frame
         cv2.putText(frame, "Status: {}".format(text), (10, 20),
@@ -86,7 +86,8 @@ while(True):
             
         # The frame is ready and already captured
         cv2.imshow('blur', firstFrame)
-        cv2.imshow('video', frame)
+        cv2.imshow('outline', imgray)
+        cv2.imshow('original', frame)
 
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
