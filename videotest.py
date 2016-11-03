@@ -73,7 +73,7 @@ while(True):
             firstFrame = frame
             pool_zone = contours[0]
             hull = cv2.convexHull(pool_zone)         
-            cv2.fillConvexPoly(firstFrame,pool_zone,(255,0,0), lineType=8, shift=0)
+            cv2.fillConvexPoly(firstFrame,pool_zone,(255,255,255), lineType=8, shift=0)
             continue
         else:
             cv2.drawContours(imgray, contours, -1, (0,255,0), 3)
