@@ -2,14 +2,17 @@
 
 import cv2
 import numpy as np
+import datetime
 import time
 
 
 # initialize the first frame in the video stream
 firstFrame = None
 
+min_area = 500
 
-cap = cv2.VideoCapture("videos/test.avi")
+# cap = cv2.VideoCapture("videos/test.avi")
+cap = cv2.VideoCapture(0)
 while not cap.isOpened():
     cap = cv2.VideoCapture("videos/test.avi")
     cv2.waitKey(1000)
@@ -44,12 +47,12 @@ while(True):
     # dilate the thresholded image to fill in holes, then find contours
     # on thresholded image
     thresh = cv2.dilate(thresh, None, iterations=2)
-    (cnts, _) = cv2.findContours(thresh.copy(),cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_SIMPLE)
+    (_, cnts, _) = cv2.findContours(thresh.copy(),cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_SIMPLE)
   
     # loop over the contours
     for c in cnts:
         # if the contour is too small, ignore it
-        if cv2.contourArea(c) < args["min_area"]:
+        if cv2.contourArea(c) < min_area:
             continue
 
         # compute the bounding box for the contour, draw it on the frame,
