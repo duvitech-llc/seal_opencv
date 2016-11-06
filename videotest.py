@@ -7,6 +7,7 @@ import datetime
 
 pool_zone = None
 firstFrame = None
+prevFrame = None
 
 cap = cv2.VideoCapture("videos/test.avi")
 while not cap.isOpened():
@@ -78,6 +79,7 @@ while(True):
         else:
             cv2.drawContours(imgray, contours, -1, (0,255,0), 3)
 
+
         # draw the text and timestamp on the frame
         cv2.putText(frame, "Status: {}".format(text), (10, 20),
             cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
@@ -88,6 +90,8 @@ while(True):
         cv2.imshow('blur', firstFrame)
         cv2.imshow('outline', imgray)
         cv2.imshow('original', frame)
+            
+        prevFrame = frame
 
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
