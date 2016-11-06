@@ -36,9 +36,11 @@ def searchForMovement(resThresh, cameraFeed):
         x,y,w,h = cv2.boundingRect(largestContourVec)
         xpos = x + w/2
         ypos = y + h/2
-        # cv2.rectangle(cameraFeed,(x,y),(x+w,y+h),(0,255,0),2)
-        # cv2.ellipse(cameraFeed, (xpos,ypos)
-        cv2.circle(cameraFeed,(xpos,ypos),10,(0,255,0),2)     
+        cv2.circle(cameraFeed,(xpos,ypos),14,(0,255,0),2)
+        cv2.line(cameraFeed,(xpos,ypos), (xpos,ypos + 7),(255,0,0),2)    
+        cv2.line(cameraFeed,(xpos,ypos - 7), (xpos,ypos),(2550,0,0),2)    
+        cv2.line(cameraFeed,(xpos,ypos), (xpos+7,ypos),(255,0,0),2)    
+        cv2.line(cameraFeed,(xpos-7,ypos), (xpos,ypos),(255,0,0),2)   
 
 while(True):
     cap = cv2.VideoCapture("videos/bouncingBall.avi")
