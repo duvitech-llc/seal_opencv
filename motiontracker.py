@@ -36,18 +36,20 @@ def searchForMovement(resThresh, cameraFeed):
         x,y,w,h = cv2.boundingRect(largestContourVec)
         xpos = x + w/2
         ypos = y + h/2
-        cv2.circle(cameraFeed,(xpos,ypos),14,(0,255,0),2)
-        cv2.line(cameraFeed,(xpos,ypos), (xpos,ypos + 7),(255,0,0),2)    
-        cv2.line(cameraFeed,(xpos,ypos - 7), (xpos,ypos),(2550,0,0),2)    
-        cv2.line(cameraFeed,(xpos,ypos), (xpos+7,ypos),(255,0,0),2)    
-        cv2.line(cameraFeed,(xpos-7,ypos), (xpos,ypos),(255,0,0),2)   
+        cv2.circle(cameraFeed,(int(xpos),int(ypos)),14,(0,255,0),2)
+        cv2.line(cameraFeed,(int(xpos),int(ypos)), (int(xpos),int(ypos) + 7),(255,0,0),2)    
+        cv2.line(cameraFeed,(int(xpos),int(ypos) - 7), (int(xpos),int(ypos)),(2550,0,0),2)    
+        cv2.line(cameraFeed,(int(xpos),int(ypos)), (int(xpos)+7,int(ypos)),(255,0,0),2)    
+        cv2.line(cameraFeed,(int(xpos)-7,int(ypos)), (int(xpos),int(ypos)),(255,0,0),2)   
+
+print (cv2.__version__)
 
 while(True):
     cap = cv2.VideoCapture("videos/bouncingBall.avi")
     while not cap.isOpened():
         cap = cv2.VideoCapture("videos/bouncingBall.avi")
         cv2.waitKey(1000)
-        print "Wait for the header"
+        print ("Wait for the header")
         
 
     while(cap.get(cv2.CAP_PROP_POS_FRAMES) < cap.get(cv2.CAP_PROP_FRAME_COUNT)-1):
@@ -101,11 +103,11 @@ while(True):
             trackingEnabled = ~trackingEnabled
         elif (ch == ord('p')):
             pause = ~pause
-            print "Code Paused"
+            print ("Code Paused")
             while (pause):
                 if cv2.waitKey(25) & 0xFF == ord('p'):
                     pause = False
-                    print "Code Resumed"
+                    print ("Code Resumed")
         
 
     cap.release()
