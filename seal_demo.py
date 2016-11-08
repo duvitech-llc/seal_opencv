@@ -4,9 +4,56 @@ import cv2
 import numpy as np
 import datetime
 import time
+from matplotlib import pyplot as plt
 
-SENSITIVITY_VALUE = 25
-BLUR_SIZE = 15
+class Point:
+    """ Point class represents and manipulates x,y coords. """
+
+    def __init__(self, x=0, y=0):
+        """ Create a new point at x, y """
+        self.x = x
+        self.y = y
+
+    def print_point(pt):
+        print("({0}, {1})".format(pt.x, pt.y))
+
+
+class Rectangle:
+    """ A class to manufacture rectangle objects """
+
+    def __init__(self, posn, w, h):
+        """ Initialize rectangle at posn, with width w, height h """
+        self.corner = posn
+        self.width = w
+        self.height = h
+
+    def __str__(self):
+        return  "({0}, {1}, {2})".format(self.corner, self.width, self.height)  
+
+    def grow(self, delta_width, delta_height):
+        """ Grow (or shrink) this object by the deltas """
+        self.width += delta_width
+        self.height += delta_height
+
+    def move(self, dx, dy):
+        """ Move this object by the deltas """
+        self.corner.x += dx
+        self.corner.y += dy
+
+    def draw(self, target):
+        """ Draw rectangle on image """
+        cv2.rectangle(target, (self.corner.x,self.corner.y), (self.corner.x + self.width, self.corner.y + self.height), (0,0,255),2)
+    
+    def contains(self, rect):
+        """ Determing if rectangle resides inside this Rectangle """
+        if((rect.corner.x >=self.corner.x and rect.corner.y >= self.corner.y) and \
+            (((rect.corner.x + rect.width) <= (self.corner.x + self.width)) and ((rect.corner.y + rect.height) <= (self.corner.y + self.height)))):
+            return True
+        else:
+            return False
+
+SENSITIVITY_VALUE = 40
+BLUR_SIZE = 20
 
 trackingEnabled = False
 debugMode = False
@@ -21,7 +68,15 @@ grayImage2 = None
 diffImage = None
 threshImage = None
 
-def searchForMovement(resThresh, cameraFeed):
+poolRect = Rectangle(Point(40.45),210,210)
+objtrack = []
+currtrack = []
+count = 0
+
+def searchForMovement(resThresh, cameraFeed):    
+    global count
+    global currtrack
+
     temp = None
     objectDetected = False
     temp = resThresh
@@ -36,17 +91,21 @@ def searchForMovement(resThresh, cameraFeed):
         x,y,w,h = cv2.boundingRect(largestContourVec)
         xpos = x + w/2
         ypos = y + h/2
-        cv2.rectangle(cameraFeed,(x,y),(x+w,y+h),(0,255,0),2) 
+        br = Rectangle(Point(x,y), w, h)
+        currtrack.append(br)
+
+    return objectDetected 
 
 while(True):
     cap = cv2.VideoCapture("videos/test.avi")
     while not cap.isOpened():
         cap = cv2.VideoCapture("videos/test.avi")
         cv2.waitKey(1000)
-        print "Wait for the header"
+        print ("Wait for the header")
         
 
     while(cap.get(cv2.CAP_PROP_POS_FRAMES) < cap.get(cv2.CAP_PROP_FRAME_COUNT)-5):
+        text = "Unoccupied"
         # read first frame and convert to grayscale
         flag, frame1 = cap.read()
         grayImage1 = cv2.cvtColor(frame1,cv2.COLOR_BGR2GRAY)
@@ -72,7 +131,6 @@ while(True):
 
         # blur 
         threshImage = cv2.blur(threshImage, (BLUR_SIZE, BLUR_SIZE))
-
         ret,threshImage = cv2.threshold(threshImage,SENSITIVITY_VALUE,255,cv2.THRESH_BINARY)
 
         if(debugMode):
@@ -81,15 +139,31 @@ while(True):
             if(debugWindowsVisible):
                 cv2.destroyWindow("Final Thresh")
                 debugWindowsVisible = False
-
+        
         if (trackingEnabled):
-            searchForMovement(threshImage, frame1)
+            if(searchForMovement(threshImage, frame1)):                
+                text = "Warning"
+                #currtrack.clear();
+                
+        # draw Rectangles
+        for box in currtrack:
+            box.draw(frame1)
+            if(poolRect.contains(box)):
+                count = count + 1 
 
+        currtrack.clear()
+        
         # add security timestamp to display 
+        cv2.putText(frame1, "                   Status: {}".format(text), (10, 20),
+            cv2.FONT_HERSHEY_SIMPLEX, 0.35, (0, 0, 255), 1)
+        cv2.putText(frame1, "                   Count: {}".format(count), (10, 40),
+            cv2.FONT_HERSHEY_SIMPLEX, 0.35, (0, 0, 255), 1)
+
         cv2.putText(frame1, datetime.datetime.now().strftime("%A %d %B %Y %I:%M:%S%p"),
             (10, frame1.shape[0] - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.35, (0, 0, 255), 1)
 
         # show video stream
+        cv2.rectangle(frame1, (45,50), (210,210), (255,0,0), 2)
         cv2.imshow("Video", frame1)
 
         ch = cv2.waitKey(1) & 0xFF
@@ -102,11 +176,11 @@ while(True):
             trackingEnabled = ~trackingEnabled
         elif (ch == ord('p')):
             pause = ~pause
-            print "Code Paused"
+            print ("Code Paused")
             while (pause):
                 if cv2.waitKey(25) & 0xFF == ord('p'):
                     pause = False
-                    print "Code Resumed"
+                    print ("Code Resumed")
         
         time.sleep(0.025)
         

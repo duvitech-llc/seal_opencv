@@ -13,7 +13,7 @@ cap = cv2.VideoCapture("videos/test.avi")
 while not cap.isOpened():
     cap = cv2.VideoCapture("videos/test.avi")
     cv2.waitKey(1000)
-    print "Wait for the header"
+    print ("Wait for the header")
 
 total_frames = cap.get(cv2.CAP_PROP_FRAME_COUNT) - 5
 
@@ -97,7 +97,7 @@ while(True):
         break
 
     if pos_frame >= total_frames:
-        print "Reset position"
+        print ("Reset position")
         cap.set(cv2.CAP_PROP_POS_FRAMES, 0)
         
     time.sleep(0.015)
