@@ -52,6 +52,36 @@ class Rectangle:
         else:
             return False
 
+# Set threshold and maxValue default 127
+limit = 170
+maxValue = 255
+ 
+# Set up the SimpleBlobdetector with default parameters.
+params = cv2.SimpleBlobDetector_Params()
+    
+# Change thresholds
+params.minThreshold = 180;
+params.maxThreshold = 256;
+    
+# Filter by Area.
+params.filterByArea = True
+params.minArea = 50
+    
+# Filter by Circularity
+params.filterByCircularity = False
+params.minCircularity = 0.1
+    
+# Filter by Convexity
+params.filterByConvexity = False
+params.minConvexity = 0.5
+    
+# Filter by Inertia
+params.filterByInertia = True
+params.minInertiaRatio = 0.5
+    
+detector = cv2.SimpleBlobDetector_create(params)
+
+
 SENSITIVITY_VALUE = 30
 BLUR_SIZE = 30
 
@@ -120,12 +150,19 @@ while(True):
         # threshold intensity
         ret,threshImage = cv2.threshold(diffImage,SENSITIVITY_VALUE,255,cv2.THRESH_BINARY)
         
+        ret,thresh = cv2.threshold(grayImage1,limit,maxValue,cv2.THRESH_BINARY)
+        im2, contours, hierarchy = cv2.findContours(thresh,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
+
+        cv2.drawContours(grayImage1, contours, -1, (0,255,0), 3)
+
         if(debugMode):
+            cv2.imshow("prevFrame Image", grayImage1)
             cv2.imshow("Difference Image", diffImage)
             cv2.imshow("Threshold Image", threshImage)
             debugWindowsVisible = True
         else:
             if(debugWindowsVisible):
+                cv2.destroyWindow("prevFrame Image")
                 cv2.destroyWindow("Difference Image")
                 cv2.destroyWindow("Threshold Image")
 
