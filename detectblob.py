@@ -67,13 +67,13 @@ while(True):
     reversemask=255-mask
     keypoints = detector.detect(reversemask)
     if keypoints:
-        print "found %d blobs" % len(keypoints)
+        print ("found %d blobs" % len(keypoints))
         if len(keypoints) > 4:
             # if more than four blobs, keep the four largest
             keypoints.sort(key=(lambda s: s.size))
             keypoints=keypoints[0:3]
     else:
-        print "no blobs"
+        print ("no blobs")
  
     # Draw green circles around detected blobs
     im_with_keypoints = cv2.drawKeypoints(frame, keypoints, np.array([]), (0,255,0), cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)

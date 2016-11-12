@@ -19,7 +19,7 @@ cap = cv2.VideoCapture("videos/test.avi")
 while not cap.isOpened():
     cap = cv2.VideoCapture("videos/test.avi")
     cv2.waitKey(1000)
-    print "Wait for the header"
+    print ("Wait for the header")
 
 
 flag, img = cap.read()
