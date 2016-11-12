@@ -82,8 +82,8 @@ params.minInertiaRatio = 0.5
 detector = cv2.SimpleBlobDetector_create(params)
 
 
-SENSITIVITY_VALUE = 30
-BLUR_SIZE = 30
+SENSITIVITY_VALUE = 35
+BLUR_SIZE = 35
 
 trackingEnabled = True
 debugMode = False
@@ -219,7 +219,7 @@ while(True):
                     pause = False
                     print ("Code Resumed")
         
-        time.sleep(0.025)
+        time.sleep(0.03)
         
 
     cap.release()    
