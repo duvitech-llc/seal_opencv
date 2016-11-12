@@ -52,10 +52,10 @@ class Rectangle:
         else:
             return False
 
-SENSITIVITY_VALUE = 40
-BLUR_SIZE = 20
+SENSITIVITY_VALUE = 30
+BLUR_SIZE = 30
 
-trackingEnabled = False
+trackingEnabled = True
 debugMode = False
 bExiting = False
 debugWindowsVisible = False
@@ -68,7 +68,7 @@ grayImage2 = None
 diffImage = None
 threshImage = None
 
-poolRect = Rectangle(Point(40.45),210,210)
+poolRect = Rectangle(Point(55,35),210,210)
 objtrack = []
 currtrack = []
 count = 0
@@ -163,7 +163,7 @@ while(True):
             (10, frame1.shape[0] - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.35, (0, 0, 255), 1)
 
         # show video stream
-        cv2.rectangle(frame1, (45,50), (210,210), (255,0,0), 2)
+        # cv2.rectangle(frame1, (poolRect.corner.x, poolRect.corner.y), (poolRect.width, poolRect.height), (255,0,0), 2)
         cv2.imshow("Video", frame1)
 
         ch = cv2.waitKey(1) & 0xFF
@@ -185,7 +185,8 @@ while(True):
         time.sleep(0.025)
         
 
-    cap.release()
+    cap.release()    
+    count = 0
     if(bExiting):
         break
 
