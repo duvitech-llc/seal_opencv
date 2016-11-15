@@ -82,8 +82,8 @@ params.minInertiaRatio = 0.5
 detector = cv2.SimpleBlobDetector_create(params)
 
 
-SENSITIVITY_VALUE = 35
-BLUR_SIZE = 35
+SENSITIVITY_VALUE = 55
+BLUR_SIZE = 55
 
 trackingEnabled = True
 debugMode = False
@@ -98,7 +98,9 @@ grayImage2 = None
 diffImage = None
 threshImage = None
 
-poolRect = Rectangle(Point(55,35),210,210)
+# poolRect = Rectangle(Point(95,45),400,370) # pool
+# poolRect = Rectangle(Point(75,115),360,370)  # img_207
+poolRect = Rectangle(Point(105,135),400,370) # 20161001
 objtrack = []
 currtrack = []
 count = 0
@@ -127,9 +129,9 @@ def searchForMovement(resThresh, cameraFeed):
     return objectDetected 
 
 while(True):
-    cap = cv2.VideoCapture("videos/test.avi")
+    cap = cv2.VideoCapture("videos/20161001.mov")
     while not cap.isOpened():
-        cap = cv2.VideoCapture("videos/test.avi")
+        cap = cv2.VideoCapture("videos/20161001.avi")
         cv2.waitKey(1000)
         print ("Wait for the header")
         
@@ -184,6 +186,10 @@ while(True):
                 
         # draw Rectangles
         for box in currtrack:
+            box.corner.x = box.corner.x + 10;
+            box.corner.y = box.corner.y + 10;
+            box.width = box.width - 10;
+            box.height = box.height - 10;
             box.draw(frame1)
             if(poolRect.contains(box)):
                 count = count + 1 
@@ -219,7 +225,7 @@ while(True):
                     pause = False
                     print ("Code Resumed")
         
-        time.sleep(0.03)
+        time.sleep(0.07)
         
 
     cap.release()    
