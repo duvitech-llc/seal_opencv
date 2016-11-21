@@ -6,7 +6,8 @@ import time
 
 fps = 0
 count = 0
-cap = cv2.VideoCapture(0)
+
+cap = cv2.VideoCapture("videos/Nov_19.mov")
 start = time.time()
 
 while(True):

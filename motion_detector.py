@@ -12,11 +12,12 @@ firstFrame = None
 min_area = 500
 
 # cap = cv2.VideoCapture("videos/test.avi")
-cap = cv2.VideoCapture(0)
+# cap = cv2.VideoCapture(0)
+cap = cv2.VideoCapture("videos/Nov_19.mov")
 while not cap.isOpened():
-    cap = cv2.VideoCapture("videos/test.avi")
+    cap = cv2.VideoCapture("videos/Nov_19.mov")
     cv2.waitKey(1000)
-    print "Wait for the header"
+    print ("Wait for the header")
 
 total_frames = cap.get(cv2.CAP_PROP_FRAME_COUNT) - 5
 
@@ -28,7 +29,7 @@ while(True):
     # if the frame could not be grabbed, then we have reached the end
     # of the video
     if not grabbed:
-        print "frame not grabbed"
+        print ("frame not grabbed")
         break
 
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)

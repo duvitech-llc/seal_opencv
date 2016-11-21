@@ -9,9 +9,10 @@ pool_zone = None
 firstFrame = None
 prevFrame = None
 
-cap = cv2.VideoCapture("videos/test.avi")
+
+cap = cv2.VideoCapture("videos/Nov_19.mov")
 while not cap.isOpened():
-    cap = cv2.VideoCapture("videos/test.avi")
+    cap = cv2.VideoCapture("videos/Nov_19.mov")
     cv2.waitKey(1000)
     print ("Wait for the header")
 

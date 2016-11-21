@@ -82,8 +82,8 @@ params.minInertiaRatio = 0.5
 detector = cv2.SimpleBlobDetector_create(params)
 
 
-SENSITIVITY_VALUE = 55
-BLUR_SIZE = 55
+SENSITIVITY_VALUE = 25
+BLUR_SIZE = 10
 
 trackingEnabled = True
 debugMode = False
@@ -129,9 +129,9 @@ def searchForMovement(resThresh, cameraFeed):
     return objectDetected 
 
 while(True):
-    cap = cv2.VideoCapture("videos/20161001.mov")
+    cap = cv2.VideoCapture("videos/Nov_19.mov")
     while not cap.isOpened():
-        cap = cv2.VideoCapture("videos/20161001.avi")
+        cap = cv2.VideoCapture("videos/Nov_19.mov")
         cv2.waitKey(1000)
         print ("Wait for the header")
         
