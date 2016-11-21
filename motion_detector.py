@@ -1,5 +1,8 @@
 #!/usr/bin/env python
-
+from __future__ import print_function
+from imutils.object_detection import non_max_suppression
+from imutils import paths
+import imutils
 import cv2
 import numpy as np
 import datetime
@@ -10,6 +13,9 @@ import time
 firstFrame = None
 
 min_area = 500
+
+hog = cv2.HOGDescriptor()
+hog.setSVMDetector(cv2.HOGDescriptor_getDefaultPeopleDetector())
 
 # cap = cv2.VideoCapture("videos/test.avi")
 # cap = cv2.VideoCapture(0)
@@ -39,6 +45,15 @@ while(True):
     if firstFrame is None:
         firstFrame = gray
         continue
+
+
+    # detect people in the image
+    (rects, weights) = hog.detectMultiScale(gray, winStride=(2, 2), padding=(4, 4), scale=1.05)
+
+    # draw the original bounding boxes
+    for (x, y, w, h) in rects:
+        cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 0, 255), 2)
+
 
     # compute the absolute difference between the current frame and
     # first frame
@@ -77,7 +92,7 @@ while(True):
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
 
-    time.sleep(0.015)
+    # time.sleep(0.015)
 
 # When everything done, release the capture
 cap.release()
