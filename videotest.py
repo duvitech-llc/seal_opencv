@@ -54,50 +54,25 @@ while(True):
 
     if flag:
         
-        myblur = cv2.GaussianBlur(frame, (25, 25), 0)
-        hsv = cv2.cvtColor(myblur, cv2.COLOR_RGB2HSV_FULL)
-    
-
-        if firstFrame is None:
-            firstFrame = frame
-            refFrame = hsv
-
-        frameDelta = cv2.absdiff(hsv, refFrame)
+        myblur = cv2.blur(frame, (8, 8))
+        im_color = cv2.applyColorMap(myblur, cv2.COLORMAP_PINK)
         
-        # define range of purple color in HSV
-        purpleMin = np.array([115,50,10])
-        purpleMax = np.array([160,255,255])
-
-        # Sets pixels to white if in purple range, else will be set to black
-        mask = cv2.inRange(frameDelta, purpleMin, purpleMax)
-        
-        # Bitwise-AND of mask and purple only image - only used for display
-        res = cv2.bitwise_and(frame, frame, mask= mask)
-
         # Detect blobs.
-        reversemask=255-mask
-        keypoints = detector.detect(reversemask)
-        if keypoints:
-            print ("found %d blobs" % len(keypoints))
-            if len(keypoints) > 4:
-                # if more than four blobs, keep the four largest
-                keypoints.sort(key=(lambda s: s.size))
-                keypoints=keypoints[0:3]
-        else:
-            print ("no blobs")
-                
+        img_th = cv2.adaptiveThreshold(im_color,255,cv2.ADAPTIVE_THRESH_GAUSSIAN_C,cv2.THRESH_BINARY,11,2)
+        contours, hierarchy = cv2.findContours(img_th, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
+
+        
         # draw the text and timestamp on the frame
         cv2.putText(frame, "Status: {}".format(text), (10, 20),
             cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
         cv2.putText(frame, datetime.datetime.now().strftime("%A %d %B %Y %I:%M:%S%p"),
             (10, frame.shape[0] - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.35, (0, 0, 255), 1)
             
-        # The frame is ready and already captured
-        cv2.imshow('original', frame)
-        cv2.imshow('delta', frameDelta)
-        cv2.imshow('hsv', hsv)
-            
         prevFrame = frame
+
+        cv2.imshow('original', frame)
+        cv2.imshow("Frame", im_color)
+        
 
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
@@ -106,7 +81,7 @@ while(True):
         print ("Reset position")
         cap.set(cv2.CAP_PROP_POS_FRAMES, 0)
         
-    # time.sleep(0.015)
+    time.sleep(0.015)
 
 # When everything done, release the capture
 cap.release()
