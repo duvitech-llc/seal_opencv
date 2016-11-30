@@ -72,10 +72,22 @@ if __name__=='__main__':
         
     detector = cv2.SimpleBlobDetector_create(params)
 
+    limit = 195
+    maxValue = 255
     history = 100
+    firstFrame = True
+    ctp = None
 
     while True:
         frame = get_frame(cap, 1.0)
+        if firstFrame:
+            grayImage1 = cv2.cvtColor(frame,cv2.COLOR_BGR2GRAY)
+            ret,thp = cv2.threshold(grayImage1,limit,maxValue,cv2.THRESH_BINARY)
+            imp, ctp, hierarchy = cv2.findContours(thp,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
+            firstFrame = False
+
+        cv2.drawContours(frame, ctp, -1, (180,0,0), 3)
+
         mask = bgSubtractor.apply(frame, learningRate=1.0/history)
         mask = cv2.morphologyEx(mask, cv2.MORPH_OPEN, kernel)
         mask = cv2.cvtColor(mask, cv2.COLOR_GRAY2BGR)
@@ -86,7 +98,8 @@ if __name__=='__main__':
         imgray = cv2.cvtColor(mask & frame,cv2.COLOR_BGR2GRAY)
         ret,thresh = cv2.threshold(imgray,127,255,0)
         
-        im2, contours, hierarchy = cv2.findContours(thresh,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
+        # less blob delete pool
+        im2, contours, hierarchy = cv2.findContours(thresh,cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_SIMPLE)
 
         # loop over the contours
         for c in contours:
